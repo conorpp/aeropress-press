@@ -6,6 +6,7 @@ It requires four plates to be 3D printed.  And on the BOM there will be:
 
 * 4 compression springs
 * 2 stepper motors
+* 2 limit switches
 * 8 nylon bearings
 * 2 lead screws
 * 4 smooth rods
