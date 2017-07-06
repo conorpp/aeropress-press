@@ -46,7 +46,7 @@ lead_screw_holes = []
 
 pad = spring_d
 
-SPRINGS = 1
+SPRINGS = 0
 SPLICE = 0
 
 def spring_base():
@@ -96,7 +96,7 @@ def top_plate():
         r -= lsh
         legr -= lsh
         legl -= lsh
-        lsh = translate([x, spring_base_y/2., -1e-3])(cylinder(d = lead_screw_d, h = spring_top_z*2))
+        lsh = translate([x, spring_base_y/2., -1e-3])(cylinder(d = lead_screw_d + lead_screw_pad, h = spring_top_z*2))
         r -= lsh
         legr -= lsh
         legl -= lsh
