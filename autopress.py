@@ -4,10 +4,10 @@ use('lib/springs.scad')
 
 RESOLUTION = 40
 
-aeropress_d = 20.
-spring_base_x = aeropress_d * 2.
-spring_base_y = aeropress_d * 1.3
-spring_base_z = 5.
+aeropress_d = 108.
+spring_base_x = aeropress_d * 1.6
+spring_base_y = aeropress_d * 1.1
+spring_base_z = 24.
 
 spring_top_z = spring_base_z/2.
 
@@ -16,29 +16,33 @@ lswitch_y = 1.0
 lswitch_z = 2.
 lswitch_sink = 0.5
 
-lead_screw_d = 3.0
-lead_screw_h = 49.5
-lead_screw_pad = 1.0
+lead_screw_d = 8.0
+lead_screw_h = 425.
+lead_screw_pad = 1.5
 
 hexnut_d = 5.
 hexnut_sink = 2.
 
-spring_d = 5.2
-spring_h = 5.0
+spring_d = 18.0
+spring_h = 25.0
 spring_sink = spring_h/5.
 
 rod_hole_start_h = 1.
-rod_d = 2.5
-bearing_od = 2.0
-bearing_id = 1.0
-bearing_h = 3.0
-rod_h = 51.
+rod_d = 8
+bearing_od = 15
+bearing_id = 8.0 + 0.1
+bearing_h = 24.0
+rod_h = lead_screw_h + 5.0
 
 stepper_x = 8.
 stepper_y = 8.
 stepper_sink = 2.
 
-top_to_roof_dist = 5.0
+top_to_roof_dist = 25.0
+
+keep_out_d = 108.0
+max_h = 435.0
+min_inside_h = 381.0
 
 spring_locs = []
 rod_holes = []
@@ -47,7 +51,7 @@ lead_screw_holes = []
 pad = spring_d
 
 SPRINGS = 0
-SPLICE = 0
+SPLICE = 1
 
 def spring_base():
     r = cube([spring_base_x,spring_base_y,spring_base_z])
@@ -163,7 +167,7 @@ def assembly():
 
     for i in spring_locs:
         sb += translate([0,0,spring_h - spring_sink])( translate(i)(color('orange')(bearing())))
-        sb += translate([0,0,top_plates_h - i[2]])( translate(i)(color('orange')(bearing())))
+        #sb += translate([0,0,top_plates_h - i[2]])( translate(i)(color('orange')(bearing())))
         sb += translate([i[0], i[1], rod_hole_start_h])( color('pink')(rod()))
 
     for x in [0+pad, spring_base_x-pad]:
@@ -175,7 +179,7 @@ def assembly():
 
     sb += translate([0,pad*1.5/4,top_plates_h - spring_top_z])(color('orange')(sense_plate()))
 
-    mug = translate([spring_base_x/2, spring_base_y/2, spring_base_z + spring_h])( scale([0.18]*3)(import_stl("../mug.stl")) )
+    mug = translate([spring_base_x/2, spring_base_y/2, spring_base_z + spring_h])( scale([1.0]*3)(import_stl("../mug.stl")) )
 
     aero = cylinder(d = 11.0, h = 2.)
     aero += translate([0,0,2.])(cylinder(d = 8.0, h = 10))
@@ -187,11 +191,13 @@ def assembly():
     
     aero = translate([spring_base_x/2, spring_base_y/2, spring_base_z + spring_h + 9])( aero )
 
-    sb += color('tan')(mug)
-    sb += (aero)
+    sb += (color('tan')(mug) + aero)
+
+    sb += color([0.5,0.2,0., 0.5])(translate([spring_base_x/2, spring_base_y/2, 0])(cylinder(d = keep_out_d, h = max_h)))
+    sb += color([0.7,.7,1., .4])(translate([spring_base_x/2, spring_base_y/2, 0])(cylinder(d = keep_out_d, h = min_inside_h)))
 
     if SPLICE:
-        sb -= translate([-1e-3,-1e-3,0])(cube([100,pad,100]))
+        sb -= translate([-1e-3,-1e-3,0])(cube([100,pad,1000]))
 
     return sb
 
